@@ -1,20 +1,34 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
 
-export default function App() {
+import React from 'react';
+import { ActivityIndicator } from 'react-native';
+import { Provider } from 'react-redux';
+import { NavigationContainer } from '@react-navigation/native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+import { store } from './src/store';
+import { useAppPersistence } from './src/hooks/usePersistSlice';
+import AppNavigator from './src/navigation/AppNavigator';
+
+function Root() {
+  const ready = useAppPersistence();
+
+  if (!ready) {
+    return <ActivityIndicator size="large" style={{ flex: 1 }} />;
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <AppNavigator />
+    </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+  return (
+    <SafeAreaProvider>
+      <Provider store={store}>
+        <Root />
+      </Provider>
+    </SafeAreaProvider>
+  );
+}
